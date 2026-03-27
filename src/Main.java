@@ -80,12 +80,17 @@ class AttendanceManager {
     }
 
     void showLowAttendance() {
+        No_Low_Attendance=0
         for (Student s : students) {
             if (s.getAttendancePercentage() < 75) {
                 s.displayDetails();
                 System.out.println("⚠ Low Attendance!");
                 System.out.println("----------------");
+                No_Low_Attendance+=1
             }
+        if (No_Low_Attendance==0){
+            System.out.println("No Low Attendance");
+        }
         }
     }
 }

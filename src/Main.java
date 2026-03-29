@@ -103,6 +103,8 @@ public class Main {
         Scanner sc = new Scanner(System.in);
         AttendanceManager manager = new AttendanceManager();
 
+        int no_of_class_taken=0;
+
         while (true) {
             System.out.println("\n1. Add Student");
             System.out.println("2. Mark Attendance (Bulk)");
@@ -135,45 +137,36 @@ public class Main {
                     break;
 
                 case 2:
-                    System.out.print("Enter Student IDs (space-separated): ");
+                    no_of_class_taken++;
+
+                    System.out.println("Marking attendance for class " + no_of_class_taken);
+
+                    System.out.print("Enter Student IDs (space-separated, present students): ");
                     String line = sc.nextLine();
 
                     String[] ids = line.split(" ");
+                    ArrayList<String> presentIds = new ArrayList<>();
 
-                    System.out.print("Present for all? (true/false): ");
+                    // Store entered IDs
+                    for (String idInput : ids) {
+                        presentIds.add(idInput);
+                    }
 
-                    boolean present;
+                    int presentCount = 0;
 
-                    // Safe boolean input
-                    while (true) {
-                        String input = sc.nextLine().toLowerCase();
-
-                        if (input.equals("true") || input.equals("false")) {
-                            present = Boolean.parseBoolean(input);
-                            break;
+                    // Loop through ALL students
+                    for (Student s : manager.students) {
+                        if (presentIds.contains(s.id)) {
+                            s.markAttendance(true);
+                            presentCount++;
                         } else {
-                            System.out.print("Enter only true or false: ");
+                            s.markAttendance(false);
                         }
                     }
 
-                    int foundCount = 0;
-
-                    for (String sid : ids) {
-                        Student s = manager.findStudent(sid);
-
-                        if (s != null) {
-                            s.markAttendance(present);
-                            foundCount++;
-                        } else {
-                            System.out.println("Student ID not found: " + sid);
-                        }
-                    }
-
-                    if (foundCount == 0) {
-                        System.out.println("No valid students found!");
-                    } else {
-                        System.out.println("Attendance marked for " + foundCount + " student(s).");
-                    }
+                    System.out.println("Attendance marked.");
+                    System.out.println("Present students: " + presentCount);
+                    System.out.println("Absent students: " + (manager.students.size() - presentCount));
 
                     break;
 

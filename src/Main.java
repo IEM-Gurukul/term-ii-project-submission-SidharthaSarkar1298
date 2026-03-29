@@ -105,7 +105,7 @@ public class Main {
 
         while (true) {
             System.out.println("\n1. Add Student");
-            System.out.println("2. Mark Attendance");
+            System.out.println("2. Mark Attendance (Bulk)");
             System.out.println("3. View All Students");
             System.out.println("4. Show Low Attendance");
             System.out.println("5. Exit");
@@ -135,31 +135,46 @@ public class Main {
                     break;
 
                 case 2:
-                    System.out.print("Enter Student ID: ");
-                    String sid = sc.nextLine();
-                    Student s = manager.findStudent(sid);
+                    System.out.print("Enter Student IDs (space-separated): ");
+                    String line = sc.nextLine();
 
-                    if (s != null) {
-                        System.out.print("Present? (true/false): ");
+                    String[] ids = line.split(" ");
 
-                        boolean present;
+                    System.out.print("Present for all? (true/false): ");
 
-                        // Safe input for boolean
-                        while (true) {
-                            String input = sc.nextLine().toLowerCase();
+                    boolean present;
 
-                            if (input.equals("true") || input.equals("false")) {
-                                present = Boolean.parseBoolean(input);
-                                break;
-                            } else {
-                                System.out.print("Enter only true or false: ");
-                            }
+                    // Safe boolean input
+                    while (true) {
+                        String input = sc.nextLine().toLowerCase();
+
+                        if (input.equals("true") || input.equals("false")) {
+                            present = Boolean.parseBoolean(input);
+                            break;
+                        } else {
+                            System.out.print("Enter only true or false: ");
                         }
-
-                        s.markAttendance(present);
-                    } else {
-                        System.out.println("Student not found!");
                     }
+
+                    int foundCount = 0;
+
+                    for (String sid : ids) {
+                        Student s = manager.findStudent(sid);
+
+                        if (s != null) {
+                            s.markAttendance(present);
+                            foundCount++;
+                        } else {
+                            System.out.println("Student ID not found: " + sid);
+                        }
+                    }
+
+                    if (foundCount == 0) {
+                        System.out.println("No valid students found!");
+                    } else {
+                        System.out.println("Attendance marked for " + foundCount + " student(s).");
+                    }
+
                     break;
 
                 case 3:

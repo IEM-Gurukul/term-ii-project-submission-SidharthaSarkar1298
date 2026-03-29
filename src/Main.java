@@ -111,8 +111,19 @@ public class Main {
             System.out.println("5. Exit");
             System.out.print("Enter choice: ");
 
-            int choice = sc.nextInt();
-            sc.nextLine();
+            int choice;
+
+            // Safe input for menu
+            while (true) {
+                try {
+                    choice = sc.nextInt();
+                    sc.nextLine();
+                    break;
+                } catch (Exception e) {
+                    System.out.print("Invalid input! Enter a number: ");
+                    sc.nextLine();
+                }
+            }
 
             switch (choice) {
                 case 1:
@@ -127,9 +138,24 @@ public class Main {
                     System.out.print("Enter Student ID: ");
                     String sid = sc.nextLine();
                     Student s = manager.findStudent(sid);
+
                     if (s != null) {
                         System.out.print("Present? (true/false): ");
-                        boolean present = sc.nextBoolean();
+
+                        boolean present;
+
+                        // Safe input for boolean
+                        while (true) {
+                            String input = sc.nextLine().toLowerCase();
+
+                            if (input.equals("true") || input.equals("false")) {
+                                present = Boolean.parseBoolean(input);
+                                break;
+                            } else {
+                                System.out.print("Enter only true or false: ");
+                            }
+                        }
+
                         s.markAttendance(present);
                     } else {
                         System.out.println("Student not found!");
@@ -145,6 +171,7 @@ public class Main {
                     break;
 
                 case 5:
+                    System.out.println("Exiting...");
                     System.exit(0);
 
                 default:
